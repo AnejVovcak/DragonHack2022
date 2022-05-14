@@ -1,18 +1,53 @@
-{% extends 'index.html' %}
+<html>
 
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
 
-{% block content %}
-<canvas id="canvas" width="800" height="600" style="border: 1px solid;"></canvas>
+<body>
+    <h1 id="naslov" style="text-align: center; font-family: Comfortaa; margin: 1%; font-size:500%;">MAVENS</h1>
+    <div align="center">
+        <canvas id="canvas" width="100px" height="100px" style="border: 0px solid; background-color: #EFEDED; "></canvas>
+    </div>
+</body>
 <script>
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
-   
+
+    canvas.width = window.innerWidth * 0.5;
+    canvas.height = window.innerHeight * 0.5;
+    
     async function prenosPodatkov() {
-        return await fetch(`${window.origin}/me`)
+        return await fetch(`${window.origin}/podatki`)
             .then(response => response.json());
     }
-   var podatki = prenosPodatkov();
-console.log(podatki);
+    var podatki = prenosPodatkov();
+
+    //polmer za balinčke
+    var r = window.innerHeight * 0.04;
+
+    var stObjektov = Object.keys(podatki).length;
+
+    for (var i = 0; i < stObjektov; i++) {
+        var objekt = Object.keys(podatki)[i];
+        var balincek = [podatki[objekt]["x"], podatki[objekt]["y"], podatki[objekt]["barva"]];
+        risiKrog(balincek);
+    }
+
+    function risiKrog(podatki) {
+
+        ctx.beginPath();
+        ctx.arc(podatki[0], podatki[1], r, 0, 2 * Math.PI);
+        ctx.fillStyle = podatki[2];
+        ctx.fill();
+        ctx.lineWidth = r / 10;
+        ctx.strokeStyle = 'white';
+        ctx.stroke();
+
+    }
 
 </script>
-{% endblock %}
+
+</html>

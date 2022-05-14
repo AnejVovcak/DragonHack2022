@@ -1,30 +1,52 @@
 from flask import Flask, render_template
 import os
 import random
-from vid import izpis
+import threading
+from vid import zaznavanje,izpis
 app = Flask(__name__)
+
 
 @app.route("/")
 def index():
-    url = "../img/slika1.jpg"
-    return render_template("index.html", url=url)
-    #return "halo halo"
+    return "to je osnovno stran ekipe Mavens!"
 
-@app.route("/test")
-def index1():
-   return "halo halo"
-
+#URL naše glavne aplikacije
 @app.route("/platno")
 def platno():
-    me = me_api()
-    print(me)
-    url = None
-    return render_template("platno.html", url=url)
+    return render_template("platno.html")
 
-@app.route("/me", methods=["GET"])
+#GET poizvedba, ki vrne podatke, ki jih zazna rač. vid
+@app.route("/podatki", methods=["GET"])
 def me_api():
     return izpis()
+
+#funkcija, ki se pokliče v novem threadu, ob začetku aplikacije
+def server():
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
     
+#funkcija, ki se pokliče ob začetku aplikacije
 if __name__ == "__main__":
-   app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
+    #definiramo thread, ki bo poklical funkcijo zaznavanje (rač. vid)
+    t1 = threading.Thread(target=zaznavanje)
+
+    #definiramo glavni thread, ki bo poklical funkcijo server - zagon flask serverja
+    t2=threading.Thread(target=server)
+   
+    t2.setDaemon(True)
+
+    #najprej se zažene nov thread, ki bo poklical funkcijo zaznavanje (rač. vid)
+    t1.start()
+
+    #nato se zažene glavni thread, ki bo poklical funkcijo server - zagon flask serverja
+    t2.start()
+    t1.join()
+    try:
+       while True:
+            pass
+    except KeyboardInterrupt:
+        print("Koncaj")
+        exit()
+   
+   
    
