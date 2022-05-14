@@ -46,17 +46,13 @@ def zaznavanje():
     
     cameraFeed = cv2.VideoCapture(0)
 
-
-    time.sleep(1)
-
-
-
+    time.sleep(2)
 
     i = 0
     ozadje = None
 
     while 1:
-
+        #print("iteracija")
 
         """
         while i<100:
@@ -86,9 +82,9 @@ def zaznavanje():
         while not ret:
             continue
 
-        cv2.imshow("Raw",frame)
+        #cv2.imshow("Raw",frame)
         masked = Mask(frame)
-        cv2.imshow("Masked",masked)
+        #cv2.imshow("Masked",masked)
         
         centers = cv2.findContours(masked.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
         cnts = imutils.grab_contours(centers)
@@ -111,11 +107,11 @@ def zaznavanje():
                     i+=1
                 #cv2.circle(frame, center, 5, (0, 0, 255), -1)
 
-        cv2.imshow("KOnec",frame)
+        #cv2.imshow("KOnec",frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     
     cameraFeed.release()
     cv2.destroyAllWindows()
-
+    print("Konec vid.py")
 #zaznavanje()
