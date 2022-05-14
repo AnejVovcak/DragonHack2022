@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+
+
+{% block content %}
+<canvas id="canvas" width="800" height="600" style="border: 1px solid;"></canvas>
+<script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+   
+    async function prenosPodatkov() {
+        return await fetch(`${window.origin}/me`)
+            .then(response => response.json());
+    }
+   var podatki = prenosPodatkov();
+console.log(podatki);
+
+</script>
+{% endblock %}
