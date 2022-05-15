@@ -15,6 +15,10 @@ def index():
 def platno():
     return render_template("platno.html")
 
+@app.route("/analiza")
+def analiza():
+    return render_template("analiza.html")
+
 #GET poizvedba, ki vrne podatke, ki jih zazna rač. vid
 @app.route("/podatki", methods=["GET"])
 def me_api():
