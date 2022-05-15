@@ -65,7 +65,7 @@ def colorDetection(frame):
 
     newdata = {}
 
-    #Array mejnih vrednosti posameznih barv
+    """    #Array mejnih vrednosti posameznih barv
     colorRanges = [
         [(16,68,112),(33,227,247)], #yellow
         [(40,68,112),(56,227,247)], #green
@@ -73,15 +73,17 @@ def colorDetection(frame):
         [(81,51,0),(112,255,255)], #blue
         [(0,0,223),(168,41,255)] #black
         ]
-    """
+   """
+    
+
     colorRanges = [
-        [(12,92,93),(35,227,255)], #yellow
-        [(37,133,0),(80,228,186)], #green
-        [(0,103,97),(13,255,255)], #red
-        [(80,133,0),(89,228,186)], #blue
-        [(104,133,0),(110,228,186)] #black
+        [(28,106,64),(43,255,255)], #yellow
+        [(46,71,127),(78,210,241)], #green
+        [(151,106,64),(179,255,255)], #red
+        [(65,106,64),(113,255,255)], #blue
+        [(98,56,101),(113,103,125)] #black
         ]
-    """
+    
     original = frame.copy()
     objId = 0
 
@@ -97,10 +99,10 @@ def colorDetection(frame):
 
             color = getColor(colorIndex)  #Barva balinčka
                 
-            if radius > 30:
+            if radius > 30 or (colorIndex == 4 and radius >10):
                 cv2.circle(original, (int(x), int(y)), int(radius),(int(color[0]),int(color[1]),int(color[2])), 2)
                 cv2.putText(original, str(colorIndex)+' : ' + str(Vrsta(colorIndex)), (x,y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
-
+                
                 
                 newdata[str(objId)] = {
                     "x" : x,  #X koordinata
@@ -117,22 +119,20 @@ def colorDetection(frame):
 
 
 def zaznavanje():
-
     cameraFeed = cv2.VideoCapture(0)
 
     time.sleep(1) #Čakaj da se kamera gotovo poveže
-    
     while True:
 
 
         ret,frame = cameraFeed.read()  #Beri frame iz streama in preveri uspešnost branja
-        if frame is None:
+        while frame is None:
             break
         
         frame = colorDetection(frame) #Zaznaj objekte
 
         #cv2.imshow("Frame",frame) #Prikaži zaznane objekte na sliki (Zakomentirano za rPi)
-        #print(izpis())
+        
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     
