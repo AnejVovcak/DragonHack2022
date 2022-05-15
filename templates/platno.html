@@ -28,41 +28,54 @@
     function izrisovanje(podatki) {
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
-        canvas.width = window.innerWidth * 0.9;
-        canvas.height = window.innerHeight * 0.9;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        var r = canvas.height * 0.04;
+        var visina = window.innerHeight * 0.7;
+        var sirina = window.innerWidth * 0.9;
+        canvas.width = sirina;
+        console.log(visina)
+        canvas.height = visina;
+        ctx.clearRect(0, 0, sirina, visina);
+        var r = visina * 0.05;
         var stObjektov = Object.keys(podatki).length;
         console.log("št elementov: " + stObjektov)
-        var xPremik = 0 //canvas.width / 2;
-        var yPremik = 0 //canvas.height / 2;
-        /*for (var i = 0; i < stObjektov; i++) {
+        var xPremik = sirina / 2;
+        var yPremik = visina / 2;
+        for (var i = 0; i < stObjektov; i++) {
             console.log(podatki[i]["type"])
             if (podatki[i]["type"] == 0) {
                 xPremik -= podatki[i]["x"];
                 yPremik -= podatki[i]["y"];
             }
-        } */
+        }
 
         for (var i = 0; i < stObjektov; i++) {
             var objekt = Object.keys(podatki)[i];
             var balincek = [podatki[objekt]["x"] + xPremik, podatki[objekt]["y"] + yPremik, podatki[objekt]["barva"], podatki[objekt]["type"]];
-            risiKrog(balincek, r,ctx,canvas);
+            ctx.beginPath();
+            if (balincek[3] == 0) 
+                ctx.arc(sirina / 2, visina / 2, r / 2, 0, 2 * Math.PI); 
+            else
+                ctx.arc(balincek[0], balincek[1], r, 0, 2 * Math.PI);
+            console.log("vnos")
+            ctx.fillStyle = balincek[2];
+            ctx.fill();
+            ctx.lineWidth = r / 10;
+            ctx.strokeStyle = 'white';
+            ctx.stroke();
         }
     }
-
-    function risiKrog(podatki, r,ctx,canvas) {
+/*
+    function risiKrog(podatki, r, ctx, canvas) {
 
         ctx.beginPath();
-        //if (podatki[3] == 0) ctx.arc(canvas.width / 2, canvas.height / 2, r / 2, 0, 2 * Math.PI); else
-        ctx.arc(podatki[0], podatki[1], r, 0, 2 * Math.PI);
+        if (podatki[3] == 0) ctx.arc(sirina / 2, visina / 2, r / 2, 0, 2 * Math.PI); else
+            ctx.arc(podatki[0], podatki[1], r, 0, 2 * Math.PI);
         ctx.fillStyle = podatki[2];
         ctx.fill();
         ctx.lineWidth = r / 10;
         ctx.strokeStyle = 'white';
         ctx.stroke();
 
-    }
+    }*/
 
 </script>
 

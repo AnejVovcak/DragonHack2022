@@ -12,7 +12,7 @@
     <h2 id="naslov" style="text-align: center; font-family: Comfortaa; margin: 1%; font-size:500%;">analiza</h2>
 
     <div align="center">
-        <canvas id="canvas" width="100px" height="100px"
+        <canvas id="canvas" 
             style="border: 0px solid; background-color: #EFEDED; "></canvas>
     </div>
 </body>
@@ -30,19 +30,22 @@
     function izrisovanje(podatki) {
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
-        canvas.width = window.innerWidth * 0.9;
-        canvas.height = window.innerHeight * 0.9;
-        var r = canvas.height * 0.004;
+        var visina = window.outerHeight * 0.7;
+        console.log("visina"+visina)
+        var sirina = window.outerWidth * 0.9;
+        canvas.style.width = sirina;
+        canvas.style.height = visina;
+        var r = visina * 0.15;
         var stObjektov = Object.keys(podatki).length;
-        var xPremik = 0 //canvas.width / 2;
-        var yPremik = 0 //canvas.height / 2;
-        /*for (var i = 0; i < stObjektov; i++) {
+        var xPremik = sirina / 2;
+        var yPremik = visina / 2;
+        for (var i = 0; i < stObjektov; i++) {
             console.log(podatki[i]["type"])
             if (podatki[i]["type"] == 0) {
                 xPremik -= podatki[i]["x"];
                 yPremik -= podatki[i]["y"];
             }
-        } */
+        }
 
         for (var i = 0; i < stObjektov; i++) {
             var objekt = Object.keys(podatki)[i];
@@ -54,7 +57,7 @@
     function risiKrog(podatki, r,ctx,canvas) {
 
         ctx.beginPath();
-        //if (podatki[3] == 0) ctx.arc(canvas.width / 2, canvas.height / 2, r / 2, 0, 2 * Math.PI); else
+        if (podatki[3] == 0) ctx.arc(sirina / 2, visina / 2, r / 2, 0, 2 * Math.PI); else
         ctx.arc(podatki[0], podatki[1], r, 0, 2 * Math.PI);
         ctx.fillStyle = podatki[2];
         ctx.fill();
