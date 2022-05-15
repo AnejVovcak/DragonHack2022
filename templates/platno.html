@@ -1,6 +1,8 @@
 <html>
 
 <head>
+
+    <!-- import pisave Comfortaa -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap"
@@ -10,52 +12,77 @@
 <body>
     <h1 id="naslov" style="text-align: center; font-family: Comfortaa; margin: 1%; font-size:500%;">MAVENS</h1>
     <div align="center">
-        <canvas id="canvas" width="100px" height="100px"
-            style="border: 0px solid; background-color: #EFEDED; "></canvas>
+        <!-- canvas za risanje balinčkov, bež barva-->
+        <canvas id="canvas" width="100px" height="100px" style="border: 0px solid; background-color: #EFEDED; "></canvas>
     </div>
 </body>
 <script>
 
+    // GET request podatkov iz rPi
     async function prenosPodatkov() {
         return await fetch(`${window.origin}/podatki`)
             .then(response => response.json()).then(response => izrisovanje(response));
-    }
-    function zagon() {
-        prenosPodatkov()
-    }
-    setInterval(zagon, 1000)
 
+        /*
+            struktura json objekta:
+            {"x": koordinate x; "y": koordinate y; "barva": hex koda balinčka; "type": 0 => manjši balinček, 1 => prva ekipa, 2 => druga ekipa}
+        */
+    }
+
+    // kliče prenos podatkov
+    function zagon() {
+        prenosPodatkov();
+    }
+
+    //vsako sekundo pošlje nov GET request
+    setInterval(zagon, 1000);
+
+    //funkcija za prikazovanje podatkov
     function izrisovanje(podatki) {
+
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
+        
+        //velikost canvasa prilagodi glede na trenutno okno
         var visina = window.innerHeight * 0.7;
         var sirina = window.innerWidth * 0.9;
         canvas.width = sirina;
-        console.log(visina)
         canvas.height = visina;
+
+        //pobriše prejšnje slike na canvasu
         ctx.clearRect(0, 0, sirina, visina);
+
+        //relativno določen polmer balinčkov
         var r = visina * 0.05;
+
+        //število balinčkov, ki jih je potrebno prikazati
         var stObjektov = Object.keys(podatki).length;
-        console.log("št elementov: " + stObjektov)
+
+        //absoluten zamik koordinat, da bo majhen balinček na sredini 
         var xPremik = sirina / 2;
         var yPremik = visina / 2;
         for (var i = 0; i < stObjektov; i++) {
-            console.log(podatki[i]["type"])
+            //če je trenuten balinček majhen [0], izračunamo offset
             if (podatki[i]["type"] == 0) {
                 xPremik -= podatki[i]["x"];
                 yPremik -= podatki[i]["y"];
             }
         }
 
+
         for (var i = 0; i < stObjektov; i++) {
+
+            //prebere en objekt
             var objekt = Object.keys(podatki)[i];
+            //v seznam zapiše lastnosti trenutnega balinčka: premaknjeni koordinati x in y, hex barvo in vrsto balinčka
             var balincek = [podatki[objekt]["x"] + xPremik, podatki[objekt]["y"] + yPremik, podatki[objekt]["barva"], podatki[objekt]["type"]];
+            //nariše balinček
             ctx.beginPath();
+            //če je majhen balinček, ga nariše na sredino
             if (balincek[3] == 0) 
                 ctx.arc(sirina / 2, visina / 2, r / 2, 0, 2 * Math.PI); 
-            else
+            else //če je "navaden" balinček, ga nariše na ustrezno mesto
                 ctx.arc(balincek[0], balincek[1], r, 0, 2 * Math.PI);
-            console.log("vnos")
             ctx.fillStyle = balincek[2];
             ctx.fill();
             ctx.lineWidth = r / 10;
@@ -65,7 +92,6 @@
     }
 /*
     function risiKrog(podatki, r, ctx, canvas) {
-
         ctx.beginPath();
         if (podatki[3] == 0) ctx.arc(sirina / 2, visina / 2, r / 2, 0, 2 * Math.PI); else
             ctx.arc(podatki[0], podatki[1], r, 0, 2 * Math.PI);
@@ -74,7 +100,6 @@
         ctx.lineWidth = r / 10;
         ctx.strokeStyle = 'white';
         ctx.stroke();
-
     }*/
 
 </script>
