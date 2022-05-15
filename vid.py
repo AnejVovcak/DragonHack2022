@@ -49,6 +49,11 @@ def grabCenters(frame,colorRange):
     frame = cv2.erode(frame, None) #Pomanjšaj in povečaj da še bolj izničiš šum
     frame = cv2.dilate(frame, None) 
     frame = cv2.inRange(frame,colorRange[0],colorRange[1]) #Ustvari masko glede na vrednosti posameznih pikslov
+
+
+    element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3,3))
+    frame = cv2.erode(frame,element)
+    
     centers = cv2.findContours(frame.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE) #najdi posamezne dele ki jih maska ne pokriva
     cnts = imutils.grab_contours(centers) #pretvori posamezne dele v array
     return cnts
@@ -64,11 +69,19 @@ def colorDetection(frame):
     colorRanges = [
         [(16,68,112),(33,227,247)], #yellow
         [(40,68,112),(56,227,247)], #green
-        [(0,88,0),(12,255,255)], #red
+        [(0,88,127),(12,255,255)], #red
         [(81,51,0),(112,255,255)], #blue
-        [(0,0,0),(179,255,14)] #black
+        [(0,0,223),(168,41,255)] #black
         ]
-    
+    """
+    colorRanges = [
+        [(12,92,93),(35,227,255)], #yellow
+        [(37,133,0),(80,228,186)], #green
+        [(0,103,97),(13,255,255)], #red
+        [(80,133,0),(89,228,186)], #blue
+        [(104,133,0),(110,228,186)] #black
+        ]
+    """
     original = frame.copy()
     objId = 0
 
@@ -84,7 +97,7 @@ def colorDetection(frame):
 
             color = getColor(colorIndex)  #Barva balinčka
                 
-            if radius > 15:
+            if radius > 30:
                 cv2.circle(original, (int(x), int(y)), int(radius),(int(color[0]),int(color[1]),int(color[2])), 2)
                 cv2.putText(original, str(colorIndex)+' : ' + str(Vrsta(colorIndex)), (x,y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
@@ -107,7 +120,7 @@ def zaznavanje():
 
     cameraFeed = cv2.VideoCapture(0)
 
-    time.sleep(.2) #Čakaj da se kamera gotovo poveže
+    time.sleep(1) #Čakaj da se kamera gotovo poveže
     
     while True:
 
